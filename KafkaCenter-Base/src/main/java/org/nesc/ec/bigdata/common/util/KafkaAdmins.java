@@ -695,7 +695,7 @@ public class KafkaAdmins implements Closeable {
 	private void deleteGroups(List<String> consumerGroups) {
 		try {
 			DeleteConsumerGroupsResult result = this.adminClient.deleteConsumerGroups(consumerGroups);
-			KafkaFuture future = result.all();
+			KafkaFuture<Void> future = result.all();
 			future.get();
 		} catch (Exception e) {
 			throw new IllegalStateException(e);

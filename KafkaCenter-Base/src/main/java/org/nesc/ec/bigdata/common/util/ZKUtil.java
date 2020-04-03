@@ -3,8 +3,6 @@ package org.nesc.ec.bigdata.common.util;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.I0Itec.zkclient.ZkClient;
 import org.I0Itec.zkclient.exception.ZkMarshallingError;

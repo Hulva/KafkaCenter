@@ -1,12 +1,8 @@
 package org.nesc.ec.bigdata.common.util;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.header.Header;
-import org.apache.kafka.common.serialization.StringSerializer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -20,9 +16,6 @@ import java.util.concurrent.ExecutionException;
  *
  */
 public class KafkaProducers<K, V>  implements Closeable{
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(KafkaProducer.class);
-	
 	private KafkaProducer<K, V> producer;
 	
 	/**

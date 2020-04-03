@@ -1,7 +1,14 @@
 package org.nesc.ec.bigdata.service;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.kafka.clients.admin.DescribeClusterResult;
+import org.apache.kafka.common.Node;
 import org.nesc.ec.bigdata.cache.HomeCache;
 import org.nesc.ec.bigdata.common.model.BrokerInfo;
 import org.nesc.ec.bigdata.common.model.MeterMetric;
@@ -10,16 +17,13 @@ import org.nesc.ec.bigdata.common.util.JmxCollector;
 import org.nesc.ec.bigdata.constant.BrokerConfig;
 import org.nesc.ec.bigdata.constant.Constants;
 import org.nesc.ec.bigdata.model.ClusterInfo;
-import org.apache.kafka.clients.admin.DescribeClusterResult;
-import org.apache.kafka.common.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 @Service
 public class HomeService {
