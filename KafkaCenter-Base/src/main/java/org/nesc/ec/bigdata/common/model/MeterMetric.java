@@ -3,8 +3,8 @@ package org.nesc.ec.bigdata.common.model;
 import java.util.Objects;
 
 public class MeterMetric {
-	public MeterMetric(Long count, Double meanRate, Double oneMinuteRate, Double fiveMinuteRate,
-			Double fifteenMinuteRate,String metricName,String clusterID) {
+	public MeterMetric(Long count, Double meanRate, Double oneMinuteRate, Double fiveMinuteRate, Double fifteenMinuteRate,
+			String metricName, String clusterID) {
 		super();
 		this.count = count;
 		MeanRate = meanRate;
@@ -14,9 +14,9 @@ public class MeterMetric {
 		this.metricName = metricName;
 		this.clusterID = clusterID;
 	}
-	
-	public MeterMetric(Long count, Double meanRate, Double oneMinuteRate, Double fiveMinuteRate,
-			Double fifteenMinuteRate,String metricName) {
+
+	public MeterMetric(Long count, Double meanRate, Double oneMinuteRate, Double fiveMinuteRate, Double fifteenMinuteRate,
+			String metricName) {
 		super();
 		this.count = count;
 		MeanRate = meanRate;
@@ -25,10 +25,8 @@ public class MeterMetric {
 		FifteenMinuteRate = fifteenMinuteRate;
 		this.metricName = metricName;
 	}
-	
-	
-	public MeterMetric(Long count, Double meanRate, Double oneMinuteRate, Double fiveMinuteRate,
-			Double fifteenMinuteRate) {
+
+	public MeterMetric(Long count, Double meanRate, Double oneMinuteRate, Double fiveMinuteRate, Double fifteenMinuteRate) {
 		super();
 		this.count = count;
 		MeanRate = meanRate;
@@ -36,7 +34,6 @@ public class MeterMetric {
 		FiveMinuteRate = fiveMinuteRate;
 		FifteenMinuteRate = fifteenMinuteRate;
 	}
-
 
 	private Long count;
 	private Double MeanRate;
@@ -48,11 +45,9 @@ public class MeterMetric {
 	private String port;
 	private String jmxPort;
 	private String location;
-    private String clusterName;
+	private String clusterName;
 	private String metricName;
-	
-	
-	
+
 	public String getClusterName() {
 		return clusterName;
 	}
@@ -64,7 +59,7 @@ public class MeterMetric {
 	public String getLocation() {
 		return location;
 	}
-  
+
 	public void setLocation(String location) {
 		this.location = location;
 	}
@@ -105,46 +100,58 @@ public class MeterMetric {
 		super();
 		// TODO Auto-generated constructor stub
 	}
+
 	public String getMetricName() {
 		return metricName;
 	}
+
 	public void setMetricName(String metricName) {
 		this.metricName = metricName;
 	}
+
 	public Long getCount() {
 		return count;
 	}
+
 	public void setCount(Long count) {
 		this.count = count;
 	}
+
 	public Double getMeanRate() {
 		return MeanRate;
 	}
+
 	public void setMeanRate(Double meanRate) {
 		MeanRate = meanRate;
 	}
+
 	public Double getOneMinuteRate() {
 		return OneMinuteRate;
 	}
+
 	public void setOneMinuteRate(Double oneMinuteRate) {
 		OneMinuteRate = oneMinuteRate;
 	}
+
 	public Double getFiveMinuteRate() {
 		return FiveMinuteRate;
 	}
+
 	public void setFiveMinuteRate(Double fiveMinuteRate) {
 		FiveMinuteRate = fiveMinuteRate;
 	}
+
 	public Double getFifteenMinuteRate() {
 		return FifteenMinuteRate;
 	}
+
 	public void setFifteenMinuteRate(Double fifteenMinuteRate) {
 		FifteenMinuteRate = fifteenMinuteRate;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(broker,metricName,clusterID,port);
+		return Objects.hash(broker, metricName, clusterID, port);
 	}
 
 	@Override
@@ -152,28 +159,21 @@ public class MeterMetric {
 		if (this == o) {
 			return true;
 		}
-		;
 		if (o == null || getClass() != o.getClass()) {
 			return false;
 		}
-		;
 		MeterMetric meterMetric = (MeterMetric) o;
-		return Objects.equals(meterMetric.getBroker().toLowerCase(), meterMetric.getBroker().toLowerCase()) &&
-				Objects.equals(meterMetric.getMetricName().toLowerCase(), meterMetric.getMetricName().toLowerCase()) &&
-				Objects.equals(meterMetric.getClusterID().toLowerCase(), meterMetric.getClusterID().toLowerCase()) &&
-				Objects.equals(meterMetric.getPort().toLowerCase(), meterMetric.getPort().toLowerCase());
+		return Objects.equals(this.getBroker().toLowerCase(), meterMetric.getBroker().toLowerCase())
+				&& Objects.equals(this.getMetricName().toLowerCase(), meterMetric.getMetricName().toLowerCase())
+				&& Objects.equals(this.getClusterID().toLowerCase(), meterMetric.getClusterID().toLowerCase())
+				&& Objects.equals(this.getPort().toLowerCase(), meterMetric.getPort().toLowerCase());
 	}
+
 	@Override
 	public String toString() {
-		return "MeterMetric [count=" + count + ", MeanRate=" + MeanRate + ", OneMinuteRate=" + OneMinuteRate
-				+ ", FiveMinuteRate=" + FiveMinuteRate + ", FifteenMinuteRate=" + FifteenMinuteRate + ", clusterID="
-				+ clusterID + ", broker=" + broker + ", metricName=" + metricName + "]";
+		return "MeterMetric [count=" + count + ", MeanRate=" + MeanRate + ", OneMinuteRate=" + OneMinuteRate + ", FiveMinuteRate="
+				+ FiveMinuteRate + ", FifteenMinuteRate=" + FifteenMinuteRate + ", clusterID=" + clusterID + ", broker=" + broker
+				+ ", metricName=" + metricName + "]";
 	}
 
-	
-
-
-	
-
-	
 }
