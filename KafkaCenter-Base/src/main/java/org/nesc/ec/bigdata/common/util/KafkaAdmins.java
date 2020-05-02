@@ -1,6 +1,7 @@
 package org.nesc.ec.bigdata.common.util;
 
 import org.apache.kafka.clients.admin.*;
+import org.apache.kafka.clients.admin.AlterConfigOp.OpType;
 import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.common.KafkaFuture;
 import org.apache.kafka.common.TopicPartition;
@@ -335,19 +336,7 @@ public class KafkaAdmins implements Closeable {
 	 */
 	public boolean updateTopicConfig(String topicName, ConfigEntry configEntry)
 			throws InterruptedException, ExecutionException {
-
-		boolean sucess = false;
-		try {
-			ConfigResource topicResource = new ConfigResource(ConfigResource.Type.TOPIC, topicName);
-			Map<ConfigResource, Config> updateConfig = new HashMap<ConfigResource, Config>();
-			updateConfig.put(topicResource, new Config(Collections.singleton(configEntry)));
-			AlterConfigsResult alterResult = this.adminClient.alterConfigs(updateConfig);
-			alterResult.all().get();
-			sucess = true;
-		} catch (InterruptedException | ExecutionException e) {
-			e.printStackTrace();
-		}
-		return sucess;
+		return this.updateTopicConfigs(topicName, Arrays.asList(configEntry));
 	}
 
 	/**
@@ -362,9 +351,10 @@ public class KafkaAdmins implements Closeable {
 			throws InterruptedException, ExecutionException {
 		boolean sucess = false;
 		ConfigResource topicResource = new ConfigResource(ConfigResource.Type.TOPIC, topicName);
-		Map<ConfigResource, Config> updateConfig = new HashMap<ConfigResource, Config>();
-		updateConfig.put(topicResource, new Config(configList));
-		AlterConfigsResult alterResult = this.adminClient.alterConfigs(updateConfig);
+		Map<ConfigResource, Collection<AlterConfigOp>> updateConfig = new HashMap<>(1);
+		Set<AlterConfigOp> configs = configList.stream().map(configEntry -> new AlterConfigOp(configEntry, OpType.APPEND)).collect(Collectors.toSet());
+		updateConfig.put(topicResource, configs);
+		AlterConfigsResult alterResult = this.adminClient.incrementalAlterConfigs(updateConfig, new AlterConfigsOptions());
 		alterResult.all().get();
 		sucess = true;
 		return sucess;
@@ -695,7 +685,7 @@ public class KafkaAdmins implements Closeable {
 	private void deleteGroups(List<String> consumerGroups) {
 		try {
 			DeleteConsumerGroupsResult result = this.adminClient.deleteConsumerGroups(consumerGroups);
-			KafkaFuture future = result.all();
+			KafkaFuture<Void> future = result.all();
 			future.get();
 		} catch (Exception e) {
 			throw new IllegalStateException(e);

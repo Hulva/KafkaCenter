@@ -2,19 +2,23 @@ package org.nesc.ec.bigdata.common.util;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.I0Itec.zkclient.ZkClient;
 import org.I0Itec.zkclient.exception.ZkMarshallingError;
 import org.I0Itec.zkclient.serialize.ZkSerializer;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.data.Stat;
-
-import com.alibaba.fastjson.JSONObject;
 import org.nesc.ec.bigdata.common.model.BrokerInfo;
 import org.nesc.ec.bigdata.common.model.TopicInfo;
+
+import com.alibaba.fastjson.JSONObject;
 
 import kafka.utils.ZKStringSerializer;
 

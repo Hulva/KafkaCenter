@@ -1,7 +1,25 @@
 package org.nesc.ec.bigdata.service;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
+import java.util.concurrent.ExecutionException;
+
+import org.apache.kafka.clients.admin.ConfigEntry;
+import org.apache.kafka.clients.admin.ListTopicsOptions;
+import org.apache.kafka.clients.admin.NewPartitions;
+import org.apache.kafka.clients.admin.TopicDescription;
+import org.apache.kafka.common.Node;
+import org.apache.kafka.common.TopicPartition;
+import org.apache.kafka.common.TopicPartitionInfo;
 import org.nesc.ec.bigdata.common.model.BrokerInfo;
 import org.nesc.ec.bigdata.common.model.MeterMetric;
 import org.nesc.ec.bigdata.common.util.JmxCollector;
@@ -12,21 +30,13 @@ import org.nesc.ec.bigdata.constant.TopicConfig;
 import org.nesc.ec.bigdata.model.ClusterInfo;
 import org.nesc.ec.bigdata.model.KafkaManagerBroker;
 import org.nesc.ec.bigdata.model.TopicInfo;
-import org.apache.kafka.clients.admin.ConfigEntry;
-import org.apache.kafka.clients.admin.ListTopicsOptions;
-import org.apache.kafka.clients.admin.NewPartitions;
-import org.apache.kafka.clients.admin.TopicDescription;
-import org.apache.kafka.common.Node;
-import org.apache.kafka.common.TopicPartition;
-import org.apache.kafka.common.TopicPartitionInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 @Service
 public class KafkaManagerService {

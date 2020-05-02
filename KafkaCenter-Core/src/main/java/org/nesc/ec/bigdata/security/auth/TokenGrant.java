@@ -6,8 +6,9 @@ import java.io.Serializable;
  * @author lg99
  */
 public class TokenGrant implements Serializable {
+	private static final long serialVersionUID = 511079187572212657L;
 
-    private final String accessToken;
+	private final String accessToken;
 
     private final String scope;
 

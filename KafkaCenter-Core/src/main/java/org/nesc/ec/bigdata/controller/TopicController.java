@@ -51,7 +51,7 @@ public class TopicController extends BaseController{
 	@GetMapping("/query/partition")
 	public RestResponse getPartition(@RequestParam String clusterId, @RequestParam String topicName) {
 		try {
-			List list = kafkaManagerService.getPartitionByTopic(clusterId, topicName);
+			List<Integer> list = kafkaManagerService.getPartitionByTopic(clusterId, topicName);
 			return SUCCESS_DATA(list);
 		} catch (Exception e) {
 			LOG.error("Get Partition error,",e);
