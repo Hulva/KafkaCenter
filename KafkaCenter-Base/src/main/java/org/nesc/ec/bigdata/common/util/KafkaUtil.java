@@ -1,7 +1,33 @@
 package org.nesc.ec.bigdata.common.util;
 
-import org.apache.kafka.clients.CommonClientConfigs;
-import org.apache.kafka.clients.admin.*;
+import java.io.Closeable;
+import java.io.IOException;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.concurrent.ExecutionException;
+
+import org.apache.kafka.clients.admin.AdminClient;
+import org.apache.kafka.clients.admin.AlterConfigsResult;
+import org.apache.kafka.clients.admin.Config;
+import org.apache.kafka.clients.admin.ConfigEntry;
+import org.apache.kafka.clients.admin.CreateTopicsResult;
+import org.apache.kafka.clients.admin.DeleteTopicsResult;
+import org.apache.kafka.clients.admin.DescribeClusterResult;
+import org.apache.kafka.clients.admin.DescribeConfigsResult;
+import org.apache.kafka.clients.admin.KafkaAdminClient;
+import org.apache.kafka.clients.admin.ListTopicsOptions;
+import org.apache.kafka.clients.admin.ListTopicsResult;
+import org.apache.kafka.clients.admin.NewTopic;
+import org.apache.kafka.clients.admin.TopicDescription;
+import org.apache.kafka.clients.admin.TopicListing;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -11,17 +37,7 @@ import org.apache.kafka.common.config.ConfigResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.time.Duration;
-import java.util.*;
-import java.util.concurrent.ExecutionException;
-   
-
-
 public class KafkaUtil<K, V>  implements Closeable{
-	
-	
 	private static final Logger LOGGER = LoggerFactory.getLogger(KafkaUtil.class);
 	
 	private AdminClient adminClient;
@@ -47,7 +63,6 @@ public class KafkaUtil<K, V>  implements Closeable{
 	}
 	
 	/************************************************************ admin method start *******************************************************************************************/
-	
 	
 	/**
 	 * 获取集群配置信息 
@@ -285,14 +300,17 @@ public class KafkaUtil<K, V>  implements Closeable{
 	 * 删除topics
 	 */
 	public Map<String, Boolean> delete(Collection<String> topics) {
-		Map<String, Boolean> result  = new HashMap<String, Boolean>( 1 << 4);
+		Map<String, Boolean> result  = new HashMap<String, Boolean>(topics.size());
 		DeleteTopicsResult delRes  = this.adminClient.deleteTopics(topics);
 		Map<String, KafkaFuture<Void>> deleteFutures = delRes.values();
 		for(String topicName: topics) {
 			boolean flag = false;
 			try {
 				KafkaFuture<Void> kafkaFutrue = deleteFutures.get(topicName);
-				flag = true;  
+				kafkaFutrue.get();
+				if (!kafkaFutrue.isCompletedExceptionally()) {
+					flag = true;  
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -308,10 +326,6 @@ public class KafkaUtil<K, V>  implements Closeable{
 	 * @throws InterruptedException 
 	 */
 	public  boolean updateTopicConfig(String topicName, ConfigEntry configEntry ) throws InterruptedException, ExecutionException {
-		
-		Map<String, String> map  = new HashMap(1 << 4);
-		Iterator<Map.Entry<String, String>> it  = map.entrySet().iterator();
-		
 		boolean sucess = false;
 		try {
 			ConfigResource topicResource = new ConfigResource(ConfigResource.Type.TOPIC, topicName);
@@ -364,9 +378,6 @@ public class KafkaUtil<K, V>  implements Closeable{
 	public void send(String toppicName, K k, V v) throws InterruptedException, ExecutionException {
 		this.producer.send(new ProducerRecord<K, V>(toppicName, k, v)).get();
 	}
-	
-	
-	
 	
 	
 	// 默认String String 

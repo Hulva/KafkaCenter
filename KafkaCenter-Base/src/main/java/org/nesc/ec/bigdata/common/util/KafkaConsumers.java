@@ -2,9 +2,6 @@ package org.nesc.ec.bigdata.common.util;
 
 import org.apache.kafka.clients.consumer.*;
 import org.apache.kafka.common.TopicPartition;
-import org.apache.kafka.common.serialization.StringDeserializer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -14,8 +11,6 @@ import java.util.Map;
 import java.util.Properties;
 
 public class KafkaConsumers<K, V>  implements Closeable{
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(KafkaConsumers.class);
 	private KafkaConsumer<K, V> consumer;
 	
 	/**
@@ -26,7 +21,7 @@ public class KafkaConsumers<K, V>  implements Closeable{
      *   props.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, "15000");
 	 */
 	public KafkaConsumers (Properties consumerProps) {
-		this.consumer = new KafkaConsumer(consumerProps);
+		this.consumer = new KafkaConsumer<K, V>(consumerProps);
 	}
 	
 	public KafkaConsumer<K, V> subscribe(String toppicName) {
@@ -51,7 +46,6 @@ public class KafkaConsumers<K, V>  implements Closeable{
 	public void commitByPartition(Map<TopicPartition, OffsetAndMetadata> offsets){
 		this.consumer.commitSync(offsets);
 	}
-	
 	
 	@Override
 	public void close() throws IOException {

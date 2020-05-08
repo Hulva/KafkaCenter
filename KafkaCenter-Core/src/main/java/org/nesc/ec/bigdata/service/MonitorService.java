@@ -1,8 +1,33 @@
 package org.nesc.ec.bigdata.service;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import org.nesc.ec.bigdata.common.model.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
+import org.apache.kafka.clients.admin.ConsumerGroupDescription;
+import org.apache.kafka.clients.admin.TopicDescription;
+import org.apache.kafka.clients.consumer.OffsetAndMetadata;
+import org.apache.kafka.common.ConsumerGroupState;
+import org.apache.kafka.common.Node;
+import org.apache.kafka.common.TopicPartition;
+import org.apache.kafka.common.TopicPartitionInfo;
+import org.nesc.ec.bigdata.common.model.BrokerInfo;
+import org.nesc.ec.bigdata.common.model.GroupTopicConsumerState;
+import org.nesc.ec.bigdata.common.model.MeterMetric;
+import org.nesc.ec.bigdata.common.model.OffsetStat;
+import org.nesc.ec.bigdata.common.model.PartitionAssignmentState;
+import org.nesc.ec.bigdata.common.model.TopicConsumerGroupState;
 import org.nesc.ec.bigdata.common.util.JmxCollector;
 import org.nesc.ec.bigdata.common.util.KafkaAdmins;
 import org.nesc.ec.bigdata.constant.BrokerConfig;
@@ -12,24 +37,13 @@ import org.nesc.ec.bigdata.model.ClusterGroup;
 import org.nesc.ec.bigdata.model.ClusterInfo;
 import org.nesc.ec.bigdata.model.MonitorTopic;
 import org.nesc.ec.bigdata.model.UserInfo;
-import org.apache.kafka.clients.admin.ConsumerGroupDescription;
-import org.apache.kafka.clients.admin.TopicDescription;
-import org.apache.kafka.clients.consumer.OffsetAndMetadata;
-import org.apache.kafka.common.ConsumerGroupState;
-import org.apache.kafka.common.Node;
-import org.apache.kafka.common.TopicPartition;
-import org.apache.kafka.common.TopicPartitionInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import java.util.stream.Collectors;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 /**
  * @author Truman.P.Du

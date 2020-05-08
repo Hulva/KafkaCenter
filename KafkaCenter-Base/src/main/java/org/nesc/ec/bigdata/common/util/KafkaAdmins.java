@@ -1,6 +1,7 @@
 package org.nesc.ec.bigdata.common.util;
 
 import org.apache.kafka.clients.admin.*;
+import org.apache.kafka.clients.admin.AlterConfigOp.OpType;
 import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.common.KafkaFuture;
 import org.apache.kafka.common.TopicPartition;
@@ -335,19 +336,7 @@ public class KafkaAdmins implements Closeable {
 	 */
 	public boolean updateTopicConfig(String topicName, ConfigEntry configEntry)
 			throws InterruptedException, ExecutionException {
-
-		boolean sucess = false;
-		try {
-			ConfigResource topicResource = new ConfigResource(ConfigResource.Type.TOPIC, topicName);
-			Map<ConfigResource, Config> updateConfig = new HashMap<ConfigResource, Config>();
-			updateConfig.put(topicResource, new Config(Collections.singleton(configEntry)));
-			AlterConfigsResult alterResult = this.adminClient.alterConfigs(updateConfig);
-			alterResult.all().get();
-			sucess = true;
-		} catch (InterruptedException | ExecutionException e) {
-			e.printStackTrace();
-		}
-		return sucess;
+		return this.updateTopicConfigs(topicName, Arrays.asList(configEntry));
 	}
 
 	/**
@@ -358,15 +347,21 @@ public class KafkaAdmins implements Closeable {
 	 *                              ConfigEntry(TopicConfig.RETENTION_MS_CONFIG,
 	 *                              "860000");
 	 */
-	public boolean updateTopicConfigs(String topicName, List<ConfigEntry> configList)
-			throws InterruptedException, ExecutionException {
+	public boolean updateTopicConfigs(String topicName, List<ConfigEntry> configList) {
 		boolean sucess = false;
-		ConfigResource topicResource = new ConfigResource(ConfigResource.Type.TOPIC, topicName);
-		Map<ConfigResource, Config> updateConfig = new HashMap<ConfigResource, Config>();
-		updateConfig.put(topicResource, new Config(configList));
-		AlterConfigsResult alterResult = this.adminClient.alterConfigs(updateConfig);
-		alterResult.all().get();
-		sucess = true;
+		try {
+			List<AlterConfigOp> alterConfigOps = configList.stream().map(config -> {
+				return new AlterConfigOp(config, OpType.SET);
+			}).collect(Collectors.toList());
+			ConfigResource topicResource = new ConfigResource(ConfigResource.Type.TOPIC, topicName);
+			Map<ConfigResource, Collection<AlterConfigOp>> updateConfig = new HashMap<>();
+			updateConfig.put(topicResource, alterConfigOps);
+			AlterConfigsResult alterResult = this.adminClient.incrementalAlterConfigs(updateConfig);
+			alterResult.all().get();
+			sucess = true;
+		} catch (InterruptedException | ExecutionException e) {
+			e.printStackTrace();
+		}
 		return sucess;
 	}
 
@@ -695,7 +690,7 @@ public class KafkaAdmins implements Closeable {
 	private void deleteGroups(List<String> consumerGroups) {
 		try {
 			DeleteConsumerGroupsResult result = this.adminClient.deleteConsumerGroups(consumerGroups);
-			KafkaFuture future = result.all();
+			KafkaFuture<Void> future = result.all();
 			future.get();
 		} catch (Exception e) {
 			throw new IllegalStateException(e);

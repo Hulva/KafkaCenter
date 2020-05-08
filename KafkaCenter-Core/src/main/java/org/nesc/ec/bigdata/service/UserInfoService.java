@@ -8,17 +8,16 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import org.nesc.ec.bigdata.common.RoleEnum;
 import org.nesc.ec.bigdata.constant.Constants;
+import org.nesc.ec.bigdata.mapper.UserInfoMapper;
+import org.nesc.ec.bigdata.model.TeamUser;
 import org.nesc.ec.bigdata.model.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
-import org.nesc.ec.bigdata.mapper.UserInfoMapper;
-import org.nesc.ec.bigdata.model.TeamUser;
 
 @Service
 public class UserInfoService {

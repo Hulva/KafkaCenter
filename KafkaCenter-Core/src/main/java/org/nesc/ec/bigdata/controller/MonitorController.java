@@ -57,10 +57,8 @@ public class MonitorController extends BaseController {
 	@RequestMapping(value = "/topic", method = RequestMethod.GET)
 	public List<MonitorTopic> getTopicList(@RequestParam("cluster") String clusterId) {
 		List<MonitorTopic> monitorTopics = new ArrayList<>();
-		List<ClusterInfo> clusterInfos = "-1".equalsIgnoreCase(clusterId)?clusterService.getTotalData():
-				new ArrayList<ClusterInfo>() {{
-					add(clusterService.selectById(Long.parseUnsignedLong(clusterId)));
-				}};
+		List<ClusterInfo> clusterInfos = "-1".equalsIgnoreCase(clusterId) ? clusterService.getTotalData()
+				: Arrays.asList(clusterService.selectById(Long.parseUnsignedLong(clusterId)));
 		UserInfo user = getCurrentUser();
 		monitorTopics = monitorService.getTopicList(clusterInfos,user, Constants.KeyStr.MONITOR_TOPIC);
 		return monitorTopics;
@@ -80,10 +78,14 @@ public class MonitorController extends BaseController {
 					}).collect(Collectors.toList());
 		return SUCCESS_DATA(monitorTopics);
 	}
+	
 	@GetMapping("/topic/collection")
 	@ResponseBody
-	public RestResponse collections(@PathParam(value = Constants.JsonObject.NAME) String name, @PathParam(value= Constants.KeyStr.COLLECTION) String collection
-			, @PathParam(value= Constants.KeyStr.clusterId) String clusterId, @PathParam(value=Constants.JsonObject.TYPE) String type) {
+	public RestResponse collections(
+			@PathParam(value = Constants.JsonObject.NAME) String name, 
+			@PathParam(value= Constants.KeyStr.COLLECTION) String collection, 
+			@PathParam(value= Constants.KeyStr.clusterId) String clusterId, 
+			@PathParam(value=Constants.JsonObject.TYPE) String type) {
 		try {
 			UserInfo user = getCurrentUser();
 			if(Constants.Role.ADMIN.equalsIgnoreCase(user.getName())){
@@ -115,8 +117,6 @@ public class MonitorController extends BaseController {
 		return ERROR("Collection Topic Faild!");
 	}
 
-
-
 	@RequestMapping(value = "/topic/consumer_offsets", method = RequestMethod.POST)
 	public RestResponse topicGroup(@RequestBody Map<String, String> queryMap) {
 		String topic = queryMap.get(BrokerConfig.TOPIC);
@@ -139,7 +139,6 @@ public class MonitorController extends BaseController {
 			topicGroups.sort((o1, o2) -> o1.getGroupId().compareToIgnoreCase(o2.getGroupId()));
 			return SUCCESS_DATA(topicGroups);
 		}
-
 	}
 
 	@RequestMapping(value = "/topic_group", method = RequestMethod.POST)
@@ -182,7 +181,6 @@ public class MonitorController extends BaseController {
 			}
 			return SUCCESS_DATA(result);
 		}
-
 	}
 
 	/**
@@ -225,15 +223,14 @@ public class MonitorController extends BaseController {
 
 	@GetMapping("/lag")
 	public RestResponse getGroupLag(@RequestParam("cluster") String clusterId) {
-		List<ClusterInfo> clusters = "-1".equalsIgnoreCase(clusterId)? clusterService.getTotalData():
-				new ArrayList<ClusterInfo>(){{ add(clusterService.selectById(Long.parseUnsignedLong(clusterId)));}};
+		List<ClusterInfo> clusters = "-1".equalsIgnoreCase(clusterId) ? clusterService.getTotalData()
+				: Arrays.asList(clusterService.selectById(Long.parseUnsignedLong(clusterId)));
 		JSONArray res = new JSONArray();
 		clusters.forEach(cluster->{
 			JSONArray list = monitorService.getGroupLag(cluster.getId(), cluster.getName());
 			if(!list.isEmpty()) {
 				res.addAll(list);
 			}			
-
 		});
 		List<JSONObject> list = JSONArray.parseArray(res.toJSONString(), JSONObject.class);
 		list.sort((o1, o2) -> Long.compare(o2.getLongValue(TopicConfig.LAG), o1.getLongValue(TopicConfig.LAG)));
@@ -250,7 +247,6 @@ public class MonitorController extends BaseController {
 			LOG.error("GET CLUSTER DATA FAILD,message:",e);
 			return ERROR("GET CLUSTER DATA FAILD!");
 		}
-
 	}
 
 
@@ -269,8 +265,8 @@ public class MonitorController extends BaseController {
 	// 查询所有集群的所有group信息
 	@RequestMapping(value = "/group", method = RequestMethod.GET)
 	public RestResponse getClusterAllGroup(@RequestParam("cluster") String clusterId) {
-		List<ClusterInfo> clusters = "-1".equalsIgnoreCase(clusterId)?clusterService.getTotalData():
-				new ArrayList<ClusterInfo>(){{ add(clusterService.selectById(Long.parseUnsignedLong(clusterId)));}};
+		List<ClusterInfo> clusters = "-1".equalsIgnoreCase(clusterId) ? clusterService.getTotalData()
+				: Arrays.asList(clusterService.selectById(Long.parseUnsignedLong(clusterId)));
 		List<ClusterGroup> clusterGroups;
 		try {
 			clusterGroups = monitorService.listGroupsByCluster(clusters, true);

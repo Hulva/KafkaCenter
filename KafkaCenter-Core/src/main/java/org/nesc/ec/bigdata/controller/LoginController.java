@@ -48,7 +48,6 @@ public class LoginController extends BaseController {
 	@Value("${public.url:/}")
 	String url;
 
-	@SuppressWarnings("unchecked")
 	@GetMapping("/check")
 	public UserInfo loginCheck(HttpSession session) {
 		return (UserInfo) session.getAttribute(SessionAttr.USER.getValue());

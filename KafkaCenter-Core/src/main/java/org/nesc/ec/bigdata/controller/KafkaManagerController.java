@@ -1,7 +1,10 @@
 package org.nesc.ec.bigdata.controller;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.nesc.ec.bigdata.common.BaseController;
 import org.nesc.ec.bigdata.common.RestResponse;
 import org.nesc.ec.bigdata.constant.BrokerConfig;
@@ -10,21 +13,27 @@ import org.nesc.ec.bigdata.constant.TopicConfig;
 import org.nesc.ec.bigdata.model.ClusterGroup;
 import org.nesc.ec.bigdata.model.ClusterInfo;
 import org.nesc.ec.bigdata.model.KafkaManagerBroker;
-import org.nesc.ec.bigdata.service.*;
+import org.nesc.ec.bigdata.service.AlertService;
+import org.nesc.ec.bigdata.service.ClusterService;
+import org.nesc.ec.bigdata.service.KafkaManagerService;
+import org.nesc.ec.bigdata.service.MonitorService;
+import org.nesc.ec.bigdata.service.TopicInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 @RestController
 @RequestMapping("/manager")
 public class KafkaManagerController extends BaseController{
-
     private static final Logger LOG = LoggerFactory.getLogger(KafkaManagerController.class);
 
     @Autowired
@@ -38,7 +47,6 @@ public class KafkaManagerController extends BaseController{
     @Autowired
     AlertService alertService;
 
-
     @GetMapping("/topic/list")
     public RestResponse topicList(@RequestParam("cluster") String clusterId) {
         try {
@@ -48,6 +56,7 @@ public class KafkaManagerController extends BaseController{
         }
         return ERROR("Get Topic Config Error!Please check");
     }
+    
     @PostMapping("/topic/config")
     public RestResponse topicConfig(@RequestBody Map<String,String> queryMap) {
         try {
@@ -150,10 +159,8 @@ public class KafkaManagerController extends BaseController{
 
     @GetMapping(value = "/group")
     public RestResponse getClusterAllGroup(@RequestParam("cluster") String clusterId) {
-        List<ClusterInfo> clusters = "-1".equalsIgnoreCase(clusterId)?clusterService.getTotalData():
-                new ArrayList<ClusterInfo>() {{
-                    add(clusterService.selectById(Long.parseUnsignedLong(clusterId)));
-                }};
+		List<ClusterInfo> clusters = "-1".equalsIgnoreCase(clusterId) ? clusterService.getTotalData()
+				: Arrays.asList(clusterService.selectById(Long.parseUnsignedLong(clusterId)));
         List<ClusterGroup> clusterGroups;
         try {
             clusterGroups = monitorService.listGroupsByCluster(clusters, false);
@@ -190,6 +197,7 @@ public class KafkaManagerController extends BaseController{
         }
         return SUCCESS_DATA(kafkaManagerBrokers);
     }
+    
     @PostMapping("/group/rest/offset")
     public RestResponse restOffset(@RequestBody Map<String,String> map){
         try{
@@ -205,6 +213,7 @@ public class KafkaManagerController extends BaseController{
         }
         return ERROR("group rest offset faild");
     }
+    
     @PostMapping("/group/topic")
     public RestResponse getTopicByGroup(@RequestBody Map<String,String> map){
         try {
@@ -216,5 +225,4 @@ public class KafkaManagerController extends BaseController{
             return ERROR("getTopicByGroup faild");
         }
     }
-
 }

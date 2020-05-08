@@ -1,23 +1,29 @@
 package org.nesc.ec.bigdata.service;
 
+import java.io.IOException;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
+import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.consumer.OffsetAndMetadata;
+import org.apache.kafka.common.PartitionInfo;
+import org.apache.kafka.common.TopicPartition;
+import org.apache.kafka.common.serialization.StringDeserializer;
 import org.nesc.ec.bigdata.common.util.KafkaConsumers;
 import org.nesc.ec.bigdata.constant.TopicConfig;
 import org.nesc.ec.bigdata.mapper.ClusterInfoMapper;
 import org.nesc.ec.bigdata.model.ClusterInfo;
-import org.apache.kafka.clients.consumer.*;
-import org.apache.kafka.common.PartitionInfo;
-import org.apache.kafka.common.TopicPartition;
-import org.apache.kafka.common.serialization.StringDeserializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.io.IOException;
-import java.time.Duration;
-import java.time.temporal.TemporalUnit;
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class KafkaConsumersService {

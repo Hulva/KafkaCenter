@@ -1,6 +1,12 @@
 package org.nesc.ec.bigdata.service;
 
-import com.alibaba.fastjson.JSONObject;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ExecutionException;
+
 import org.nesc.ec.bigdata.common.util.KafkaAdmins;
 import org.nesc.ec.bigdata.common.util.TimeUtil;
 import org.nesc.ec.bigdata.constant.Constants;
@@ -10,13 +16,10 @@ import org.nesc.ec.bigdata.model.ClusterInfo;
 import org.nesc.ec.bigdata.model.TaskInfo;
 import org.nesc.ec.bigdata.model.TopicInfo;
 import org.nesc.ec.bigdata.model.UserInfo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.concurrent.ExecutionException;
+import com.alibaba.fastjson.JSONObject;
 
 /**
  * @author Lola.L.Gou
@@ -32,7 +35,6 @@ public class TopicInfoService {
 	KafkaAdminService kafkaAdminService;
 	@Autowired
 	DBLogService dbLogService;
-	private static final Logger LOG = LoggerFactory.getLogger(TopicInfoService.class);
 
 	public boolean insert(TopicInfo topic) {
 		topic.setCreateTime(new Date());

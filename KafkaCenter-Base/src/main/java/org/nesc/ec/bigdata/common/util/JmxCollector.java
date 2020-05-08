@@ -12,7 +12,7 @@ import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.net.ConnectException;
+import java.math.RoundingMode;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
@@ -118,7 +118,7 @@ public class JmxCollector{
                 if(!isString(value)){
                     double d = Double.parseDouble(value);
                     BigDecimal bigDecimal = new BigDecimal(d);
-                    jsonObject.put(attributeInfo.getName(),  bigDecimal.setScale(4, BigDecimal.ROUND_HALF_UP).doubleValue());
+                    jsonObject.put(attributeInfo.getName(),  bigDecimal.setScale(4, RoundingMode.HALF_UP).doubleValue());
                 }
             }
             return jsonObject.toJavaObject(MeterMetric.class);
@@ -126,11 +126,6 @@ public class JmxCollector{
             LOG.error("collect this metric info faild:",e);
             return new MeterMetric();
         }
-
-
-
-
-
     }
 
 
