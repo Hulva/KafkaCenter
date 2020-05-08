@@ -1,0 +1,54 @@
+language: java
+jdk:
+  - openjdk8
+
+cache:
+  directories:
+    - $HOME/.m2
+    - $HOME/.npm
+    - $TRAVIS_BUILD_DIR/
+
+dist: trusty
+jobs:
+  include:
+    - stage: ui_build
+      language: node_js
+      node_js: 10.15.2
+      script: cd KafkaCenter-Frontend && npm install && npm run build
+
+    - stage: GitHubRelease
+      install:
+        - echo GitHubRelease
+      script: mvn -Drevision=${TRAVIS_TAG#v} clean package -Dmaven.test.skip=true
+      before_deploy:
+        - mkdir -p $TRAVIS_BUILD_DIR/deploy
+        - cp $TRAVIS_BUILD_DIR/KafkaCenter-Core/target/*.gz $TRAVIS_BUILD_DIR/deploy
+        - rm -f $TRAVIS_BUILD_DIR/KafkaCenter-Core/target/*.gz
+        - ls -l $TRAVIS_BUILD_DIR/deploy
+      deploy:
+        provider: releases
+        api_key: $API_KEY
+        file_glob: true
+        skip_cleanup: true
+        file: deploy/*.tar.gz
+        on:
+          tags: true
+      after_deploy: rm -rf $TRAVIS_BUILD_DIR/deploy
+
+    - stage: BuildDockerImageforRelease
+      install:
+        - echo Build Docker Image for Release
+      before_script:
+        - chmod +x ./docker/docker-build-release.sh
+      script: ./docker/docker-build-release.sh
+
+stages:
+  - name: ui_build
+    if: tag =~ /^v\d+\.\d+\.\d+.*$/
+  - name: GitHubRelease
+    if: tag =~ /^v\d+\.\d+\.\d+.*$/
+  - name: BuildDockerImageforRelease
+    if: tag =~ /^v\d+\.\d+\.\d+.*$/
+
+notifications:
+  email: true
